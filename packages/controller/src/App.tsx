@@ -9,10 +9,18 @@ export default function App() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8080/url", {
-        url: input,
-      });
+      const res = await axios.post(
+        "http://localhost:8080/url",
+        { url: input },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
       setResponse(res.data.message);
+      setInput("");
     } catch (error) {
       console.error(error);
       setResponse("Error sending data to server");
@@ -26,7 +34,7 @@ export default function App() {
           type="text"
           className="border p-2"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => setInput(e.currentTarget.value)}
           placeholder="Enter URL..."
         />
         <button type="submit">Submit</button>
