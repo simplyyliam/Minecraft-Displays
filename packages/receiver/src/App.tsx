@@ -21,8 +21,9 @@ export default function App() {
   }, [])
   
   return (  
-    <div className="flex items-center justify-center w-screen h-screen">
-      <iframe src={`https://${latestResponse}`} height={300} width={600}></iframe>
+    <div className="flex items-center justify-center w-screen h-screen ">
+      <iframe src={`https://${latestResponse}`} className="w-full h-full"></iframe>
+      <input type="text" name="" id="" />
     </div>
   );
 }
