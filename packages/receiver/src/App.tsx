@@ -10,7 +10,7 @@ export default function App() {
     const fetchLatestUrl = async () => {
       try {
         const res = await axios.get("http://localhost:8080/url")
-        setLatestResponse(res.data.message)
+        setLatestResponse(res.data.url)
       } catch (error) {
         console.error(error)
         setLatestResponse("No URL submitted yet or error fetching data")
@@ -22,7 +22,7 @@ export default function App() {
   
   return (  
     <div className="flex items-center justify-center w-screen h-screen">
-      {latestResponse}
+      <iframe src={`https://${latestResponse}`} height={300} width={600}></iframe>
     </div>
   );
 }

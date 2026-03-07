@@ -25,7 +25,7 @@ app.post('/url', (req: Request<{}, {}, { url: string }>, res: Response) => {
 
 app.get('/url', (req: Request, res: Response) => {
   if (!lastUrl) return res.status(400).send({ error: "No URL submitted yet" });
-  res.json({ message: `Last submitted URL: "${lastUrl}"` });
+  res.json({ url: `${lastUrl}` });
 });
 
 app.listen(PORT, () => {
