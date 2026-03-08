@@ -2,7 +2,7 @@ const rawApiUrl = import.meta.env.VITE_API_URL;
 const normalizedApiUrl = typeof rawApiUrl === "string" ? rawApiUrl.trim().replace(/\/+$/, "") : "";
 
 const configErrorPrefix =
-  "Invalid VITE_API_URL for controller. Set it in packages/controller/.env.local (or deploy env vars).";
+  "Invalid VITE_API_URL for cinema. Set it in packages/cinema/.env.local (or deploy env vars).";
 
 let apiUrlError: string | null = null;
 

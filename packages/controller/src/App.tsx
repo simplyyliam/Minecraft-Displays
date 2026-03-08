@@ -6,6 +6,8 @@ export default function App() {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
 
+  const [roomId, setRoomId] = useState("1");
+
   if (API_URL_ERROR) {
     return (
       <div className="flex flex-col gap-3 items-center justify-center w-screen h-screen p-6 text-center">
@@ -21,7 +23,7 @@ export default function App() {
     try {
       const res = await axios.post(
         `${API_URL}/url`,
-        { url: input },
+        { roomId, url: input },
         {
           headers: {
             "Content-Type": "application/json",
@@ -51,8 +53,18 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col gap-2 items-center justify-center w-screen h-screen">
+    <div className="flex flex-col gap-10 items-center justify-center w-screen h-screen">
       <form onSubmit={handleSubmit}>
+        <select
+          value={roomId}
+          onChange={(e) => setRoomId(e.target.value)}
+          className="border p-2"
+        >
+          <option value="1">Room 1</option>
+          <option value="2">Room 2</option>
+          <option value="3">Room 3</option>
+          <option value="4">Room 4</option>
+        </select>
         <input
           type="text"
           className="border p-2"
