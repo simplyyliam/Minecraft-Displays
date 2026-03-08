@@ -5,7 +5,7 @@ import { API_URL, API_URL_ERROR } from "./constants";
 export default function App() {
   const [latestResponse, setLatestResponse] = useState("");
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchLatestUrl = async () => {
       try {
         const res = await axios.get(`${API_URL}/url`);
@@ -14,7 +14,7 @@ export default function App() {
         setLatestResponse(url);
       } catch (error) {
         console.error("Fetch error:", error);
-        setLatestResponse(""); 
+        setLatestResponse("");
       }
     };
 
@@ -39,8 +39,10 @@ export default function App() {
           key={latestResponse}
           is="x-frame-bypass"
           src={`https://${latestResponse}`}
-          allowFullScreen
-          allow="fullscreen encrypted-media clipboard-read clipboard-write camera microphone "
+          // Use the modern permissions policy string
+          allow="fullscreen *; encrypted-media; clipboard-read; clipboard-write; camera; microphone"
+          // Keep this for legacy browser compatibility
+          allowFullScreen={true}
           title="Remote Display"
           className="w-full h-full border-none"
         ></iframe>
