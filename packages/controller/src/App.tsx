@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState, type SyntheticEvent } from "react";
 import { API_URL } from "./constants";
 
@@ -23,8 +23,21 @@ export default function App() {
       setResponse(res.data.message);
       setInput("");
     } catch (error) {
-      console.error(error);
-      setResponse("Error sending data to server");
+      const err = error as AxiosError<{ error?: string }>;
+      const serverMessage = err.response?.data?.error;
+      const status = err.response?.status;
+
+      console.error("Failed to send URL:", {
+        message: err.message,
+        status,
+        response: err.response?.data,
+      });
+
+      setResponse(
+        serverMessage
+          ? `Server error (${status ?? "unknown"}): ${serverMessage}`
+          : `Request failed: ${err.message}`,
+      );
     }
   };
 

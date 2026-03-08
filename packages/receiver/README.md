@@ -71,3 +71,16 @@ export default defineConfig([
   },
 ])
 ```
+
+
+## Environment variables
+
+Set `VITE_API_URL` to your deployed api-server origin before building/deploying this app.
+
+Example:
+
+```bash
+VITE_API_URL=https://your-api.onrender.com
+```
+
+> Vite injects env vars at build time, so redeploy/rebuild after changing this value.
