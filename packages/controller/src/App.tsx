@@ -1,10 +1,19 @@
 import axios, { AxiosError } from "axios";
 import { useState, type SyntheticEvent } from "react";
-import { API_URL } from "./constants";
+import { API_URL, API_URL_ERROR } from "./constants";
 
 export default function App() {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
+
+  if (API_URL_ERROR) {
+    return (
+      <div className="flex flex-col gap-3 items-center justify-center w-screen h-screen p-6 text-center">
+        <h1 className="text-xl font-semibold">Configuration error</h1>
+        <p>{API_URL_ERROR}</p>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
