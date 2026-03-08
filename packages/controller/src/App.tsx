@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, type SyntheticEvent } from "react";
+import { API_URL } from "./constants";
 
 export default function App() {
   const [input, setInput] = useState("");
@@ -10,12 +11,11 @@ export default function App() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/url",
+        `${API_URL}/url`,
         { url: input },
         {
           headers: {
             "Content-Type": "application/json",
-            
           },
         },
       );

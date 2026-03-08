@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { API_URL } from "./constants";
 
 export default function App() {
   const [latestResponse, setLatestResponse] = useState("");
-
   useEffect(() => {
     const fetchLatestUrl = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/url");
+        const res = await axios.get(`${API_URL}/url`);
         // Ensure you aren't double-adding https://
         const url = res.data.url.replace(/^https?:\/\//, "");
         setLatestResponse(url);
