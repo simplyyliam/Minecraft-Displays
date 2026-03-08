@@ -46,6 +46,18 @@ app.get("/url/:roomId", (req: Request, res: Response) => {
   res.json({ url })
 });
 
+// DELETE Room URL
+app.delete("/url/:roomId", (req: Request, res: Response) => {
+  const { roomId } = req.params;
+
+  if (!rooms[roomId]) {
+    return res.status(404).json({ error: "No movie in this room yet" });
+  }
+
+  delete rooms[roomId];
+  res.json({ message: `Room ${roomId} cleared` });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is alive on http://localhost:${PORT}🚀`)
 })
