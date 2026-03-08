@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
-import serverless from "serverless-http";
 import cors from "cors";
 
 const app = express();
+const PORT = process.env.PORT || 8080
 
 app.use(cors());
 app.use(express.json());
@@ -32,4 +32,6 @@ app.get("/url", (req: Request, res: Response) => {
   res.json({ url: lastUrl });
 });
 
-export default serverless(app);
+app.listen(PORT, () => {
+  console.log(`Server is alive on http://localhost:${PORT}🚀`)
+})
