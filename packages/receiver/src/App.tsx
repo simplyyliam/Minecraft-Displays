@@ -38,7 +38,10 @@ export default function App() {
         <iframe
           key={latestResponse}
           is="x-frame-bypass"
-          src={`https://${latestResponse}`}
+          src={`${latestResponse}`}
+          allowFullScreen
+          allow="fullscreen encrypted-media clipboard-read clipboard-write camera microphone "
+          title="Remote Display"
           className="w-full h-full border-none"
         ></iframe>
       ) : (
