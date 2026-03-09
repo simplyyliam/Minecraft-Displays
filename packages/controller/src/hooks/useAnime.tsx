@@ -19,7 +19,7 @@ export default function useAnime() {
     const fetchAnimeList = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/anime/search?q=${input}`,
+          `${API_URL}/anime/search?q=${encodeURIComponent(input)}`,
         );
         setAnimeList(res.data.animes);
       } catch (error) {

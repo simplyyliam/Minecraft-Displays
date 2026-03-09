@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv"
 
-dotenv.config()
+dotenv.config({ path: ".env.local" })
 const app = express();
 const PORT = process.env.PORT || 8080
 
@@ -12,7 +12,8 @@ app.use(express.json());
 
 const rooms: Record<string, string> = {}
 
-const ANIWATCH = "http://localhost:4000/api/v2/hianime"
+const ANIWATCH = process.env.ANIWATCH_URL ?? "http://localhost:4000/api/v2/hianime";
+
 
 app.get("/ping", (req: Request, res: Response) => {
   res.json({ message: "pong" });
@@ -23,7 +24,7 @@ app.get("/anime/search", async (req: Request, res: Response) => {
   const query = req.query.q as string
 
   try {
-    const response = await axios.get(`${ANIWATCH}/search?q=${query}`)
+    const response = await axios.get(`${ANIWATCH}/search?q=${encodeURIComponent(query)}`)
     res.json(response.data.data)
   } catch (err) {
     res.status(505).json({ error: `Search for ${query} failed` })
