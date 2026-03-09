@@ -14,42 +14,6 @@ app.use(express.json());
 const rooms: Record<string, string> = {}
 
 const normalizeUrl = (url: string) => /^https?:\/\//i.test(url) ? url : `https://${url}`;
-const animeClient = axios.create({
-  timeout: 15000,
-  headers: {
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Referer": "https://hianime.to/"
-  }
-});
-
-const parseAnimeResults = (html: string) => {
-  const $ = cheerio.load(html);
-  const seen = new Set<string>();
-  const results: Array<{ title: string; url: string }> = [];
-
-  const selector = ".film-name a, .flw-item .film-detail .film-name a, a[href*='/watch/']";
-  $(selector).each((_, el) => {
-    const title = $(el).text().trim();
-    const href = $(el).attr("href");
-    if (!title || !href) {
-      return;
-    }
-
-    const absoluteUrl = href.startsWith("http") ? href : `https://hianime.to${href}`;
-    if (seen.has(absoluteUrl)) {
-      return;
-    }
-
-    seen.add(absoluteUrl);
-    results.push({ title, url: absoluteUrl });
-  });
-
-  return results;
-};
-
 
 app.get("/ping", (req: Request, res: Response) => {
   res.json({ message: "pong" });
