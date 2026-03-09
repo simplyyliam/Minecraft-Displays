@@ -11,6 +11,9 @@ app.use(express.json());
 
 const rooms: Record<string, string> = {}
 
+const normalizeUrl = (url: string) => /^https?:\/\//i.test(url) ? url : `https://${url}`;
+
+
 app.get("/ping", (req: Request, res: Response) => {
   res.json({ message: "pong" });
 });
@@ -27,7 +30,7 @@ app.post("/url", (req: Request<{}, {}, { roomId: string; url: string }>, res: Re
   };
   console.log("Received URL:", url);
 
-  rooms[roomId] = url
+  rooms[roomId] = normalizeUrl(url)
   console.log(`Room ${roomId} now playing: ${url}`)
 
   res.json({ message: `Room ${roomId} updated` });
@@ -36,10 +39,10 @@ app.post("/url", (req: Request<{}, {}, { roomId: string; url: string }>, res: Re
 // GET Rooms
 app.get("/url/:roomId", (req: Request, res: Response) => {
   // Gets the params from POST
-  const {roomId} = req.params
+  const { roomId } = req.params
   const url = rooms[roomId]
 
-  if(!url) {
+  if (!url) {
     return res.status(404).json({ error: "No movie in this room yet" })
   }
 
