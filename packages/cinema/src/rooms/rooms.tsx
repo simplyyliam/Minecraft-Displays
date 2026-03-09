@@ -16,9 +16,13 @@ export default function Rooms() {
     const fetchRooms = async () => {
       try {
         const res = await axios.get(`${API_URL}/url/${roomId}`);
-        setRoomUrl(normalizeUrl(res.data.url));
+        // Avoides random updates
+        setRoomUrl((prev) => {
+          const newUrl = normalizeUrl(res.data.url);
+          return prev === newUrl ? prev : newUrl;
+        });
       } catch (error) {
-        console.error(`Could not find ${roomId}:`, error)
+        console.error(`Could not find ${roomId}:`, error);
         setRoomUrl("");
       }
     };
