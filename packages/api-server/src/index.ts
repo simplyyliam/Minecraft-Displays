@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv"
+import axios from "axios";
+import cheerio from "cheerio";
 
 dotenv.config()
 const app = express();
@@ -60,6 +62,85 @@ app.delete("/url/:roomId", (req: Request, res: Response) => {
   delete rooms[roomId];
   res.json({ message: `Room ${roomId} cleared` });
 });
+
+// Search for animes
+app.get("/anime/search", async (req: Request, res: Response) => {
+  const query = req.query.q as string
+
+  if (!query) {
+    return res.status(404).json({ error: "Missing search query" })
+  }
+
+  try {
+    const response = await axios.get(
+      `https://hianime.to/search?keyword=${encodeURIComponent(query)}`
+    )
+    const $ = cheerio.load(response.data)
+
+
+    const results: any[] = []
+
+    $(".film-name a").each((_, el) => {
+      const title = $(el).text().trim()
+      const href = $(el).attr("href")
+
+      results.push({
+        title,
+        url: "https://hianime.to" + href
+      })
+    })
+
+    res.json(results)
+    console.log(
+      `
+      Query" ${query}
+      Cheerio Data: ${$}
+      Results: ${results}
+      `
+    )
+  } catch (error) {
+    res.status(500).json({ error: "Failed to search anime" })
+  }
+})
+
+
+app.get("/anime/episodes", async (req: Request, res: Response) => {
+  const animeUrl = req.query.url as string
+  if (!animeUrl) {
+    return res.status(404).json({ error: "Missing anime URL" })
+  }
+
+  try {
+    const response = await axios.get(animeUrl)
+    const $ = cheerio.load(response.data)
+    const episodes: any[] = []
+
+    $(".ep-item").each((_, el) => {
+      const epId = $(el).attr("data-id")
+      const epNum = $(el).text().trim()
+
+      episodes.push({
+        episode: epNum,
+        url: `${animeUrl}?ep=${epId}`
+
+      })
+    })
+
+    res.json(episodes)
+
+    console.log(
+      `
+      AnimeUrl: ${animeUrl}
+      Cheerio Data: ${$}
+      Episodes: ${episodes}
+      `
+    )
+
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch episodes" })
+  }
+
+})
 
 app.listen(PORT, () => {
   console.log(`Server is alive on http://localhost:${PORT}🚀`)
