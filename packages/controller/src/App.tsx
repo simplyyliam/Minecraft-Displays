@@ -52,6 +52,23 @@ export default function App() {
     }
   };
 
+  const handleClear = async () => {
+    try {
+      const res = await axios.delete(`${API_URL}/url/${roomId}`);
+      setResponse(res.data.message);
+    } catch (error) {
+      const err = error as AxiosError<{ error?: string }>;
+      const serverMessage = err.response?.data?.error;
+      const status = err.response?.status;
+
+      setResponse(
+        serverMessage
+          ? `Server error (${status ?? "unknown"}): ${serverMessage}`
+          : `Request failed: ${err.message}`,
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col gap-10 items-center justify-center w-screen h-screen">
       <form onSubmit={handleSubmit}>
@@ -73,6 +90,9 @@ export default function App() {
           placeholder="Enter URL..."
         />
         <button type="submit">Submit</button>
+        <button type="button" onClick={handleClear} className="ml-2">
+          Clear
+        </button>
       </form>
 
       <div className="flex items-center justify-center w-10 h-5 ">
