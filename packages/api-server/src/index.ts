@@ -1,3 +1,4 @@
+import axios from 'axios';
 import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv"
@@ -11,9 +12,38 @@ app.use(express.json());
 
 const rooms: Record<string, string> = {}
 
+const ANIWATCH = "http://localhost:4000/api/v2/hianime"
+
 app.get("/ping", (req: Request, res: Response) => {
   res.json({ message: "pong" });
 });
+
+
+app.get("/anime/search", async (req: Request, res: Response) => {
+  const query = req.query.q as string
+
+  try {
+    const response = await axios.get(`${ANIWATCH}/search?q=${query}`)
+    res.json(response.data.data)
+  } catch (err) {
+    res.status(505).json({ error: `Search for ${query} failed` })
+  }
+})
+
+// GET anime episode ID
+app.get("/anime/episodes/:id", async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  try {
+    const response = await axios.get(`${ANIWATCH}/anime/${id}/episodes`)
+    res.json(response.data.data.episodes)
+    
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: "Episode fetch failed" })
+  }
+})
+
 
 // POST Rooms
 app.post("/url", (req: Request<{}, {}, { roomId: string; url: string }>, res: Response) => {
@@ -36,10 +66,10 @@ app.post("/url", (req: Request<{}, {}, { roomId: string; url: string }>, res: Re
 // GET Rooms
 app.get("/url/:roomId", (req: Request, res: Response) => {
   // Gets the params from POST
-  const {roomId} = req.params
+  const { roomId } = req.params
   const url = rooms[roomId]
 
-  if(!url) {
+  if (!url) {
     return res.status(404).json({ error: "No movie in this room yet" })
   }
 
