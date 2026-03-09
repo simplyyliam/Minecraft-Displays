@@ -1,0 +1,1 @@
+- This project uses code from aniwatch-api (MIT License). See packages/aniwatch-api/LICENSE for details.
