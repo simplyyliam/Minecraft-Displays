@@ -11,7 +11,7 @@ type Anime = {
 
 type AnimeEpisodes = {
   title: string;
-  episodesId: string;
+  episodeId: string;
   number?: number;
   isFiller?: boolean;
 };
@@ -23,6 +23,7 @@ export default function useAnimeController() {
   const [animeList, setAnimeList] = useState<Anime[]>([]);
   const [episodes, setEpisodes] = useState<AnimeEpisodes[]>([]);
   const [roomId, setRoomId] = useState("1");
+  const [streamUrl, setStreamUrl] = useState<string>("");
 
   useEffect(() => {
     if (!input) return;
@@ -59,7 +60,7 @@ export default function useAnimeController() {
     try {
       const res = await axios.post(
         `${API_URL}/url`,
-        { roomId, url: input },
+        { roomId, url: streamUrl },
         {
           headers: {
             "Content-Type": "application/json",
@@ -107,6 +108,8 @@ export default function useAnimeController() {
     response,
     animeList,
     episodes,
+    streamUrl,
+    setStreamUrl,
     input,
     setInput,
     setRoomId,

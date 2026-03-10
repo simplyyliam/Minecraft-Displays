@@ -10,14 +10,14 @@ type StoredAnime = {
 
 type StoredEpisode = {
   title: string;
-  episodesId: string;
+  episodeId: string;
   number?: number;
   isFiller?: boolean;
 };
 
 export default function AnimeDetails() {
   const { animeId } = useParams<{ animeId: string }>();
-  const { animeList, episodes } =
+  const { animeList, episodes, setStreamUrl } =
     useOutletContext<ReturnType<typeof useAnimeController>>();
   const anime = animeList.find((item) => item.id === animeId);
   const animeStorageKey = useMemo(
@@ -60,7 +60,7 @@ export default function AnimeDetails() {
 
   const activeAnime = anime ?? storedAnime;
   const activeEpisodes =
-    episodes.length > 0 ? episodes : storedEpisodes ?? [];
+    episodes.length > 0 ? episodes : (storedEpisodes ?? []);
 
   useEffect(() => {
     if (!episodesStorageKey || episodes.length === 0) return;
@@ -70,6 +70,12 @@ export default function AnimeDetails() {
       // Ignore storage write errors (e.g. storage full, private mode).
     }
   }, [episodes, episodesStorageKey]);
+
+  const generateStreamUrl = (episodeId: string) => {
+    const url = `https://hianime.to/watch/${episodeId}`;
+
+    setStreamUrl(url);
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full h-full p-2">
@@ -95,16 +101,20 @@ export default function AnimeDetails() {
           <span className="text-sm font-medium text-black/50">{animeId}</span>
         </div>
       </div>
-      <div className="flex flex-col w-full h-full border-2">
+      <div className="flex flex-col items-start gap-2 p-2 w-full h-full overflow-hidden overflow-y-auto border-2">
         {activeEpisodes.map((ep) => (
-          <div key={ep.episodesId}>
-            <span>{ep.title}</span>
-            <span>{ep.episodesId}</span>
-          </div>
+          <button
+            onClick={() => generateStreamUrl(ep.episodeId)}
+            className="cursor-pointer"
+            key={ep.episodeId}
+          >
+            <div className="flex justify-between w-full">
+              <span>{ep.title}</span>
+            </div>
+          </button>
         ))}
       </div>
     </div>
   );
 }
 
-// https://hianime.to/watch/hells-paradise-18332?ep=100187
