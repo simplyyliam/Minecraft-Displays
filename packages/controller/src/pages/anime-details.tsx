@@ -17,7 +17,7 @@ type StoredEpisode = {
 
 export default function AnimeDetails() {
   const { animeId } = useParams<{ animeId: string }>();
-  const { animeList, episodes, setStreamUrl } =
+  const { animeList, episodes, setStreamUrl, handleSubmit } =
     useOutletContext<ReturnType<typeof useAnimeController>>();
   const anime = animeList.find((item) => item.id === animeId);
   const animeStorageKey = useMemo(
@@ -105,6 +105,7 @@ export default function AnimeDetails() {
         {activeEpisodes.map((ep) => (
           <button
             onClick={() => generateStreamUrl(ep.episodeId)}
+            onSubmit={handleSubmit}
             className="cursor-pointer"
             key={ep.episodeId}
           >
