@@ -79,9 +79,9 @@ export default function AnimeDetails() {
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full h-full p-2">
-      <div className="flex gap-2.5 h-fit w-full">
-        <div className="flex border-2 h-15 w-15">
+    <div className="flex flex-col gap-2 w-full h-full p-2 text-sm">
+      <div className="flex gap-2 h-fit w-full">
+        <div className="flex border-2 h-12 w-12">
           {activeAnime?.poster ? (
             <img
               className="w-full"
@@ -95,18 +95,20 @@ export default function AnimeDetails() {
             <span className="p-2">No poster available</span>
           )}
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-w-0">
           <span className="font-semibold">
             {activeAnime?.name ?? "Unknown anime"}
           </span>
-          <span className="text-sm font-medium text-black/50">{animeId}</span>
+          <span className="text-xs font-medium text-black/50 truncate">
+            {animeId}
+          </span>
         </div>
       </div>
-      <div className="flex flex-col items-start gap-2 p-2 w-full h-full overflow-hidden overflow-y-auto border-2">
+      <div className="flex flex-col items-start gap-1 p-2 w-full flex-1 min-h-0 overflow-hidden overflow-y-auto border-2">
         {activeEpisodes.map((ep) => (
           <button
             onClick={() => generateStreamUrl(ep.episodeId)}
-            className="cursor-pointer"
+            className="cursor-pointer w-full text-left"
             key={ep.episodeId}
           >
             <div className="flex justify-between w-full">
