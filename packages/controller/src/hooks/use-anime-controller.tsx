@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { API_URL } from "../constants";
+import { useParams } from "react-router-dom";
 
 type Anime = {
   id: string;
@@ -8,10 +9,19 @@ type Anime = {
   poster: string;
 };
 
+type AnimeEpisodes = {
+  title: string;
+  episodesId: string;
+  number?: number;
+  isFiller?: boolean;
+};
+
 export default function useAnimeController() {
+  const { animeId } = useParams();
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [animeList, setAnimeList] = useState<Anime[]>([]);
+  const [episodes, setEpisodes] = useState<AnimeEpisodes[]>([]);
   const [roomId, setRoomId] = useState("1");
 
   useEffect(() => {
@@ -29,6 +39,20 @@ export default function useAnimeController() {
 
     fetchAnimeList();
   }, [input]);
+
+  useEffect(() => {
+    if (!animeId) return;
+    const fetchAnimeEpisodes = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/anime/episodes/${animeId}`);
+        setEpisodes(res.data);
+        console.log("episodes from API", res.data.episodes);
+      } catch (error) {
+        console.error(`Could not retrieve episodes for ${animeId}:`, error);
+      }
+    };
+    fetchAnimeEpisodes();
+  }, [animeId]);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -82,6 +106,7 @@ export default function useAnimeController() {
   return {
     response,
     animeList,
+    episodes,
     input,
     setInput,
     setRoomId,

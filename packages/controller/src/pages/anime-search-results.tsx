@@ -1,17 +1,16 @@
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import useAnimeController from "../hooks/use-anime-controller";
 
 export default function AnimeSearchResults() {
-  const { animeList } = useOutletContext<
-    ReturnType<typeof useAnimeController>
-  >();
+  const { animeList } =
+    useOutletContext<ReturnType<typeof useAnimeController>>();
   return (
     <>
-      <div className="">
+      <div className="flex flex-col">
         {animeList.map((list) => (
-          <div key={list.id} className="">
+          <Link to={`/anime/${list.id}`} key={list.id} className="">
             {list.name}
-          </div>
+          </Link>
         ))}
       </div>
     </>

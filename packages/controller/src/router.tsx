@@ -14,7 +14,7 @@ export const Router = createBrowserRouter([
             },
             {
                 element:<AnimeDetails/>,
-                path: "/anime/:id"
+                path: "/anime/:animeId"
             }
         ]
     }
