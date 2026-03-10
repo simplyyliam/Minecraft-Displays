@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_URL, API_URL_ERROR } from "../constants";
 
-export default function Rooms() {
+export default function RoomDisplay() {
   const { roomId } = useParams<{ roomId: string }>();
   const [roomUrl, setRoomUrl] = useState("");
 

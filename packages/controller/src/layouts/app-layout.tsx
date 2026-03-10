@@ -1,9 +1,9 @@
 import { API_URL_ERROR } from "../constants";
 import { Outlet } from "react-router-dom";
-import useAnime from "../hooks/useAnime";
+import useAnimeController from "../hooks/use-anime-controller";
 
-export default function Layout() {
-  const anime = useAnime();
+export default function AppLayout() {
+  const anime = useAnimeController();
   const { handleClear, handleSubmit, setRoomId, roomId, input, setInput, response } =
     anime;
 

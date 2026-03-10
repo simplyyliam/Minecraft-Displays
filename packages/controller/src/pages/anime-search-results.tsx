@@ -1,8 +1,10 @@
 import { useOutletContext } from "react-router-dom";
-import useAnime from "../hooks/useAnime";
+import useAnimeController from "../hooks/use-anime-controller";
 
-export default function List() {
-  const { animeList } = useOutletContext<ReturnType<typeof useAnime>>();
+export default function AnimeSearchResults() {
+  const { animeList } = useOutletContext<
+    ReturnType<typeof useAnimeController>
+  >();
   return (
     <>
       <div className="">

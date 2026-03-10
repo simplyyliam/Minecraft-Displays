@@ -1,15 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-import Lobby from "./lobby/lobby";
-import Rooms from "./rooms/rooms";
+import RoomLobby from "./pages/room-lobby";
+import RoomDisplay from "./pages/room-display";
 
 export const Router = createBrowserRouter([
   {
-    element: <Lobby />,
+    element: <RoomLobby />,
     index: true,
   },
 
   {
-    element: <Rooms />,
+    element: <RoomDisplay />,
     path: "/room/:roomId",
   },
 ]);

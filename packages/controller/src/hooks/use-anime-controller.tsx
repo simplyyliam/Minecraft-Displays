@@ -8,7 +8,7 @@ type Anime = {
   poster: string;
 };
 
-export default function useAnime() {
+export default function useAnimeController() {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [animeList, setAnimeList] = useState<Anime[]>([]);
@@ -87,6 +87,6 @@ export default function useAnime() {
     setRoomId,
     roomId,
     handleSubmit,
-    handleClear
-  }
+    handleClear,
+  };
 }

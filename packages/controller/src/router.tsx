@@ -1,19 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "./layout/layout";
-import List from "./screens/list";
-import AnimeId from "./screens/animeId";
+import AppLayout from "./layouts/app-layout";
+import AnimeSearchResults from "./pages/anime-search-results";
+import AnimeDetails from "./pages/anime-details";
 
 
 export const Router = createBrowserRouter([
     {
-        element: <Layout/>,
+        element: <AppLayout/>,
         children: [
             {
-                element: <List/>,
+                element: <AnimeSearchResults/>,
                 index: true
             },
             {
-                element:<AnimeId/>,
+                element:<AnimeDetails/>,
                 path: "/anime/:id"
             }
         ]
