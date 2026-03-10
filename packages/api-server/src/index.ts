@@ -15,8 +15,18 @@ const rooms: Record<string, string> = {}
 const ANIWATCH = process.env.ANIWATCH_URL ?? "http://localhost:4000/api/v2/hianime";
 
 
-app.get("/ping", (req: Request, res: Response) => {
+app.get("/ping", (_req: Request, res: Response) => {
   res.json({ message: "pong" });
+});
+
+app.get("/health", async (_req: Request, res: Response) => {
+  try {
+    const response = await axios.get(`${ANIWATCH}/ping`, { timeout: 8000 });
+    res.json({ status: "ok", aniwatch: response.data });
+  } catch (err) {
+    console.error("ANIWATCH healthcheck failed:", err);
+    res.status(503).json({ status: "degraded", error: "ANIWATCH unreachable" });
+  }
 });
 
 
@@ -24,10 +34,14 @@ app.get("/anime/search", async (req: Request, res: Response) => {
   const query = req.query.q as string
 
   try {
-    const response = await axios.get(`${ANIWATCH}/search?q=${encodeURIComponent(query)}`)
+    const response = await axios.get(
+      `${ANIWATCH}/search?q=${encodeURIComponent(query)}`,
+      { timeout: 8000 },
+    )
     res.json(response.data.data)
   } catch (err) {
-    res.status(505).json({ error: `Search for ${query} failed` })
+    console.error("ANIWATCH search failed:", err)
+    res.status(502).json({ error: `Search for ${query} failed` })
   }
 })
 
@@ -36,12 +50,14 @@ app.get("/anime/episodes/:id", async (req: Request, res: Response) => {
   const { id } = req.params
 
   try {
-    const response = await axios.get(`${ANIWATCH}/anime/${id}/episodes`)
+    const response = await axios.get(`${ANIWATCH}/anime/${id}/episodes`, {
+      timeout: 8000,
+    })
     res.json(response.data.data.episodes)
     
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: "Episode fetch failed" })
+    console.error("ANIWATCH episodes failed:", err)
+    res.status(502).json({ error: "Episode fetch failed" })
   }
 })
 

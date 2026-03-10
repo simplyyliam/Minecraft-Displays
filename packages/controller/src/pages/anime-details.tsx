@@ -8,39 +8,68 @@ type StoredAnime = {
   poster: string;
 };
 
+type StoredEpisode = {
+  title: string;
+  episodesId: string;
+  number?: number;
+  isFiller?: boolean;
+};
+
 export default function AnimeDetails() {
   const { animeId } = useParams<{ animeId: string }>();
   const { animeList, episodes } =
     useOutletContext<ReturnType<typeof useAnimeController>>();
   const anime = animeList.find((item) => item.id === animeId);
-  console.log("Episodes:", episodes);
-  const storageKey = useMemo(
+  const animeStorageKey = useMemo(
     () => (animeId ? `controller-anime:${animeId}` : ""),
+    [animeId],
+  );
+  const episodesStorageKey = useMemo(
+    () => (animeId ? `controller-episodes:${animeId}` : ""),
     [animeId],
   );
 
   const storedAnime = useMemo<StoredAnime | null>(() => {
-    if (!storageKey) return null;
+    if (!animeStorageKey) return null;
     try {
-      const raw = localStorage.getItem(storageKey);
+      const raw = localStorage.getItem(animeStorageKey);
       return raw ? (JSON.parse(raw) as StoredAnime) : null;
     } catch {
       return null;
     }
-  }, [storageKey]);
+  }, [animeStorageKey]);
+
+  const storedEpisodes = useMemo<StoredEpisode[] | null>(() => {
+    if (!episodesStorageKey) return null;
+    try {
+      const raw = localStorage.getItem(episodesStorageKey);
+      return raw ? (JSON.parse(raw) as StoredEpisode[]) : null;
+    } catch {
+      return null;
+    }
+  }, [episodesStorageKey]);
 
   useEffect(() => {
-    if (!anime || !storageKey) return;
+    if (!anime || !animeStorageKey) return;
     try {
-      localStorage.setItem(storageKey, JSON.stringify(anime));
+      localStorage.setItem(animeStorageKey, JSON.stringify(anime));
     } catch {
       // Ignore storage write errors (e.g. storage full, private mode).
     }
-  }, [anime, storageKey]);
+  }, [anime, animeStorageKey]);
 
   const activeAnime = anime ?? storedAnime;
+  const activeEpisodes =
+    episodes.length > 0 ? episodes : storedEpisodes ?? [];
 
-  console.log("animeId in hook:", animeId);
+  useEffect(() => {
+    if (!episodesStorageKey || episodes.length === 0) return;
+    try {
+      localStorage.setItem(episodesStorageKey, JSON.stringify(episodes));
+    } catch {
+      // Ignore storage write errors (e.g. storage full, private mode).
+    }
+  }, [episodes, episodesStorageKey]);
 
   return (
     <div className="flex flex-col gap-2 w-full h-full p-2">
@@ -66,11 +95,16 @@ export default function AnimeDetails() {
           <span className="text-sm font-medium text-black/50">{animeId}</span>
         </div>
       </div>
-      <div className="flex flex-col w-full h-full border-2 ">
-        {episodes.map((ep) => (
-          <div key={ep.episodesId}>{ep.title}</div>
+      <div className="flex flex-col w-full h-full border-2">
+        {activeEpisodes.map((ep) => (
+          <div key={ep.episodesId}>
+            <span>{ep.title}</span>
+            <span>{ep.episodesId}</span>
+          </div>
         ))}
       </div>
     </div>
   );
 }
+
+// https://hianime.to/watch/hells-paradise-18332?ep=100187
