@@ -25,6 +25,42 @@ export default function useAnimeController() {
   const [roomId, setRoomId] = useState("1");
   const [streamUrl, setStreamUrl] = useState<string>("");
 
+  const submitUrl = async (url: string) => {
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) {
+      setResponse("Please provide a URL before submitting.");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        `${API_URL}/url`,
+        { roomId, url: trimmedUrl },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      setResponse(res.data.message);
+      setInput("");
+    } catch (error) {
+      const err = error as AxiosError<{ error?: string }>;
+      const ServerMessage = err.response?.data.error;
+      const status = err.response?.status;
+
+      console.error("Failed to send URL:", {
+        message: err.message,
+        status,
+        respone: err.response?.data,
+      });
+      setResponse(
+        ServerMessage
+          ? `Server error (${status ?? "unknown"}): ${ServerMessage}`
+          : `Request failed ${err.message}`,
+      );
+    }
+  };
+
   useEffect(() => {
     if (!input) return;
     const fetchAnimeList = async () => {
@@ -57,34 +93,7 @@ export default function useAnimeController() {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(
-        `${API_URL}/url`,
-        { roomId, url: streamUrl },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-      setResponse(res.data.message);
-      setInput("");
-    } catch (error) {
-      const err = error as AxiosError<{ error?: string }>;
-      const ServerMessage = err.response?.data.error;
-      const status = err.response?.status;
-
-      console.error("Failed to send URL:", {
-        message: err.message,
-        status,
-        respone: err.response?.data,
-      });
-      setResponse(
-        ServerMessage
-          ? `Server error (${status ?? "unknown"}): ${ServerMessage}`
-          : `Request failed ${err.message}`,
-      );
-    }
+    await submitUrl(streamUrl);
   };
 
   const handleClear = async () => {
@@ -110,6 +119,7 @@ export default function useAnimeController() {
     episodes,
     streamUrl,
     setStreamUrl,
+    submitUrl,
     input,
     setInput,
     setRoomId,

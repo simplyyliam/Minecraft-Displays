@@ -17,7 +17,7 @@ type StoredEpisode = {
 
 export default function AnimeDetails() {
   const { animeId } = useParams<{ animeId: string }>();
-  const { animeList, episodes, setStreamUrl, handleSubmit } =
+  const { animeList, episodes, setStreamUrl, submitUrl } =
     useOutletContext<ReturnType<typeof useAnimeController>>();
   const anime = animeList.find((item) => item.id === animeId);
   const animeStorageKey = useMemo(
@@ -71,10 +71,11 @@ export default function AnimeDetails() {
     }
   }, [episodes, episodesStorageKey]);
 
-  const generateStreamUrl = (episodeId: string) => {
+  const generateStreamUrl = async (episodeId: string) => {
     const url = `https://hianime.to/watch/${episodeId}`;
 
     setStreamUrl(url);
+    await submitUrl(url);
   };
 
   return (
@@ -105,7 +106,6 @@ export default function AnimeDetails() {
         {activeEpisodes.map((ep) => (
           <button
             onClick={() => generateStreamUrl(ep.episodeId)}
-            onSubmit={handleSubmit}
             className="cursor-pointer"
             key={ep.episodeId}
           >
