@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import {  useOutletContext, useParams } from "react-router-dom";
 import useAnimeController from "../hooks/use-anime-controller";
+import axios from "axios";
+import { API_URL } from "../constants";
 
 type StoredAnime = {
   id: string;
@@ -54,7 +56,7 @@ export default function AnimeDetails() {
     try {
       localStorage.setItem(animeStorageKey, JSON.stringify(anime));
     } catch {
-      // Ignore storage write errors (e.g. storage full, private mode).
+      // Ig e storage write errors (e.g. storage full, private mode).
     }
   }, [anime, animeStorageKey]);
 
@@ -71,12 +73,27 @@ export default function AnimeDetails() {
     }
   }, [episodes, episodesStorageKey]);
 
-  const generateStreamUrl = async (episodeId: string) => {
-    const url = `https://hianime.to/watch/${episodeId}`;
+const generateStreamUrl = async (episodeId: string) => {
+  try {
+    console.log("Episode clicked:", episodeId);
 
-    setStreamUrl(url);
-    await submitUrl(url);
-  };
+    // Extract numeric ID after ::ep=
+    const cleanId = episodeId.includes("::ep=")
+      ? episodeId.split("::ep=")[1]
+      : episodeId;
+
+    console.log("Clean ID:", cleanId);
+
+    const res = await axios.get(`${API_URL}/anime/episode-src/${cleanId}`);
+    const stream = res.data.sources[0].url;
+    console.log("Stream URL:", stream);
+
+    setStreamUrl(stream);
+    await submitUrl(stream);
+  } catch (err) {
+    console.error("Failed to fetch stream URL", err);
+  }
+};
 
   return (
     <div className="flex flex-col gap-2 w-full h-full p-2 text-sm">
