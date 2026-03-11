@@ -4,8 +4,16 @@ import useAnimeController from "../hooks/use-anime-controller";
 
 export default function AppLayout() {
   const anime = useAnimeController();
-  const { handleClear, handleSubmit, setRoomId, roomId, input, setInput, response } =
-    anime;
+  const {
+    handleClear,
+    handleSubmit,
+    setRoomId,
+    roomId,
+    input,
+    setInput,
+    response,
+    setCategory
+  } = anime;
 
   if (API_URL_ERROR) {
     return (
@@ -54,8 +62,12 @@ export default function AppLayout() {
         <div className="border-2 w-full flex-1 min-h-0 overflow-hidden overflow-y-auto">
           <Outlet context={anime} />
         </div>
-        <div className="border-2 w-full h-fit px-2 py-1">
-          {response ? <p>{response}</p> : <p>No URL found in this Room</p>}
+        <div className="flex justify-between border-2 w-full h-fit px-2 py-1">
+          <span>{response ? <p>{response}</p> : <p>No URL found in this Room</p>}</span>
+          <div className="flex items-center justify-between gap-2.5">
+            <button onClick={() => setCategory("dub")} className="border-2 px-2">DUB</button>
+            <button onClick={() => setCategory("sub")} className="border-2 px-2">SUB</button>
+          </div>
         </div>
       </div>
     </div>

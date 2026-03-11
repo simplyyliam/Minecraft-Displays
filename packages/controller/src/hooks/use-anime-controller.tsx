@@ -24,6 +24,7 @@ export default function useAnimeController() {
   const [episodes, setEpisodes] = useState<AnimeEpisodes[]>([]);
   const [roomId, setRoomId] = useState("1");
   const [streamUrl, setStreamUrl] = useState<string>("");
+  const [category, setCategory] = useState("sub")
 
   const submitUrl = async (url: string) => {
     const trimmedUrl = url.trim();
@@ -119,6 +120,8 @@ export default function useAnimeController() {
     episodes,
     streamUrl,
     setStreamUrl,
+    category,
+    setCategory,
     submitUrl,
     input,
     setInput,

@@ -19,7 +19,7 @@ type StoredEpisode = {
 
 export default function AnimeDetails() {
   const { animeId } = useParams<{ animeId: string }>();
-  const { animeList, episodes, setStreamUrl, submitUrl } =
+  const { animeList, episodes, setStreamUrl, submitUrl, category } =
     useOutletContext<ReturnType<typeof useAnimeController>>();
   const anime = animeList.find((item) => item.id === animeId);
   const animeStorageKey = useMemo(
@@ -73,7 +73,7 @@ export default function AnimeDetails() {
     }
   }, [episodes, episodesStorageKey]);
 
-const generateStreamUrl = async (episodeId: string) => {
+const generateStreamUrl = async (episodeId: string, category: string) => {
   try {
     console.log("Episode clicked:", episodeId);
 
@@ -84,7 +84,7 @@ const generateStreamUrl = async (episodeId: string) => {
 
     console.log("Clean ID:", cleanId);
 
-    const res = await axios.get(`${API_URL}/anime/episode-src/${cleanId}`);
+    const res = await axios.get(`${API_URL}/anime/episode-src/${cleanId}?category=${category}`);
     const stream = res.data.sources[0].url;
     console.log("Stream URL:", stream);
 
@@ -124,7 +124,7 @@ const generateStreamUrl = async (episodeId: string) => {
       <div className="flex flex-col items-start gap-1 p-2 w-full flex-1 min-h-0 overflow-hidden overflow-y-auto border-2">
         {activeEpisodes.map((ep) => (
           <button
-            onClick={() => generateStreamUrl(ep.episodeId)}
+            onClick={() => generateStreamUrl(ep.episodeId, category)}
             className="cursor-pointer w-full text-left"
             key={ep.episodeId}
           >
